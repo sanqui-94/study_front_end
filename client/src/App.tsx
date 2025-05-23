@@ -1,49 +1,25 @@
-import {memo, useCallback, useEffect, useMemo, useState} from "react";
+import { useEffect, useState} from "react";
+import type {Strategy} from "@shared/types/strategy.ts";
+import StrategyCard from "./components/StrategyCard.tsx";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const ExpensiveComponent = memo(({ onClick }: { onClick: () => void }) => {
-    console.log("ExpensiveComponent rendered");
-    return  <button onClick={onClick}>Click me!</button>
-});
 
 export default function App() {
-    const [message, setMessage] = useState<string>("");
-    const [count, setCount] = useState<number>(0);
-    const [value, setValue] = useState<number>(10);
+    const [strategy, setStrategy]  = useState<Strategy | null>(null);
 
     useEffect(() => {
-        fetch(`${API_URL}/welcome`)
-            .then((res) => res.json())
-            .then(data => setMessage(data.message))
-            .catch(err => setMessage(`Error: ${err.message}`));
+        fetch(`${API_URL}/strategies/random`)
+            .then(res => res.json())
+            .then(data => setStrategy(data))
+            .catch(err => console.error(`Failed to fetch strategy: ${err}`));
     }, []);
-
-    const handleClick = useCallback(() => {
-        console.log("Clicked!");
-    }, []);
-
-    const expensiveResult = useMemo(() => {
-        console.log("calculating...");
-        let total = 0;
-        for (let i = 0; i < 100000000; i++) {
-            total += value * 0.0000001;
-        }
-        return total.toFixed(2);
-    }, [value]);
 
     return (
         <div className="App">
-            <h1>Welcome to the React App</h1>
-            <p>{message || "Loading..."}</p>
-            <div style={{ marginTop: "20px" }}>
-                <h1>Count: {count}</h1>
-                <button onClick={() => setCount(count + 1)}>Increment</button>
-
-                <h1>Expensive Result: {expensiveResult}</h1>
-                <button onClick={() => setValue(value + 1)}>Recalculate</button>
-
-                <ExpensiveComponent onClick={handleClick} />
+            <div style={{ maxWidth: 600, margin: '2rem auto' }}>
+                <h1>Oblique Strategy of the Moment</h1>
+                {strategy ? <StrategyCard strategy={strategy} /> : <p>Loading…</p>}
             </div>
         </div>
     );
