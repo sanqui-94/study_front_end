@@ -15,7 +15,7 @@ export default function StrategyCard({strategy}: Readonly<Props>) {
                     {isFavorite(strategy.id) ? "⭐️" : "☆"}
                 </button>
             </h3>
-            <p>{strategy.text}</p>
+            {strategy.text}
         </div>
     );
 }

@@ -12,5 +12,9 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "fuse.js": "^7.1.0",
+    "react-router-dom": "^7.6.1"
   }
 }
