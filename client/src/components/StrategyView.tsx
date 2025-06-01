@@ -27,7 +27,7 @@ export default function StrategyView() {
     return(
         <div className="min-h-screen flex flex-col items-center">
             <header className="text-center pt-16 pb-4">
-                <h1 className="text-4xl leading-[1.6] tracking-[0.25em] text-primary">
+                <h1 className="text-4xl text-primary">
                     Oblique Strategies
                 </h1>
                 <p className="mt-4 max-w-2xl text-base text-primary-light mx-auto">
@@ -35,7 +35,7 @@ export default function StrategyView() {
                     to break a deadlock or dilemma situation in creative processes
                 </p>
             </header>
-            <main className="flex-1 flex flex-col items-center justify-start mt-4">
+            <main className="flex-1 flex flex-col items-center justify-start mt-4 w-min-[550px]">
                 {strategy ? <StrategyCard strategy={strategy}/> : <p>Loading…</p>}
                 <button
                     onClick={handleClick}

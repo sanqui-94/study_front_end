@@ -18,13 +18,15 @@ export default function FavoritesList() {
 
 
     return (
-
-        <div>
-            <h2>Your Favorite Strategies</h2>
+        <div className="max-w-5xl mx-auto px-4 pt-16 pb-4">
+            <h1 className="text-4xl mb-4">Your Favorite Strategies</h1>
             {filteredFavorites.length === 0 ? (
-                <p>No favorites yet</p>
+                <p className="text-lg text-center text-gray-600">No favorites yet</p>
             ) : (
-                filteredFavorites.map((favorite) => (<StrategyCard key={favorite.id} strategy={favorite}/>))
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center">
+
+                    {filteredFavorites.map((favorite) => (<StrategyCard key={favorite.id} strategy={favorite}/>))}
+                </div>
             )}
         </div>
     );

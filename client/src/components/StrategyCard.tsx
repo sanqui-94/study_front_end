@@ -10,13 +10,7 @@ export default function StrategyCard({strategy}: Readonly<Props>) {
 
     return (
         <div
-            className="
-        relative
-        bg-primary text-secondary
-        rounded-2xl p-8 shadow-lg
-        w-[550px] h-60
-        flex items-center justify-center
-      "
+            className="relative bg-primary text-secondary rounded-2xl p-8 shadow-lg w-full max-w-[550px] h-60 flex items-center justify-center"
         >
             <button
                 onClick={() => toggleFavorite(strategy.id)}
