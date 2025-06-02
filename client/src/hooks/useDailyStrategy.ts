@@ -13,6 +13,7 @@ export function useDailyStrategy() {
     const  [strategy, setStrategy] = useState<Strategy | null>(null);
 
     useEffect(() => {
+        const base = import.meta.env.VITE_API_URL;
         const today = new Date().toISOString().split("T")[0];
 
         const storedStrategy = localStorage.getItem(STORAGE_KEY);
@@ -22,11 +23,11 @@ export function useDailyStrategy() {
             try {
                 // reuse stored strategy if present
                 if (parsed?.date === today) {
-                    const response = await fetch(`/api/strategies/${parsed.id}`);
+                    const response = await fetch(`${base}/api/strategies/${parsed.id}`);
                     const data = await response.json();
                     setStrategy(data);
                 } else {
-                    const response = await fetch("/api/strategies/random");
+                    const response = await fetch(`${base}/api/strategies/random`);
                     const data = await response.json();
                     setStrategy(data);
                     localStorage.setItem(STORAGE_KEY, JSON.stringify({ id: data.id, date: today }));

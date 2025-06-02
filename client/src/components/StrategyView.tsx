@@ -17,7 +17,7 @@ export default function StrategyView() {
 
     const handleClick = async () => {
         try {
-            const response = await fetch("/api/strategies/random");
+            const response = await fetch(`${base}/api/strategies/random`);
             const data = await response.json();
             setStrategy(data);
 
