@@ -4,11 +4,12 @@ import StrategyCard from "./StrategyCard";
 import Fuse from "fuse.js";
 import {MagnifyingGlassIcon} from "@heroicons/react/16/solid";
 
-const base = import.meta.env.VITE_API_URL;
+
 export default function SearchStrategy() {
     const [searchTerm, setSearchTerm] = useState("");
     const [strategies, setStrategies] = useState<Strategy[]>([]);
     const [filteredStrategies, setFilteredStrategies] = useState<Strategy[]>([]);
+    const base = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetch(`${base}/api/strategies`)
