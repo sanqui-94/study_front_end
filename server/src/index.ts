@@ -11,7 +11,7 @@ app.use(cors({
 app.use(express.json());
 app.use("/api/strategies", strategiesRouter);
 
-app.get('/api/welcome', (_req, res) => {
+app.get("/api/welcome", (_req, res) => {
     res.json({message: "Welcome my friend, to the machine!"});
 });
 

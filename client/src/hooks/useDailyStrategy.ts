@@ -13,7 +13,7 @@ export function useDailyStrategy() {
     const  [strategy, setStrategy] = useState<Strategy | null>(null);
 
     useEffect(() => {
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toISOString().split("T")[0];
 
         const storedStrategy = localStorage.getItem(STORAGE_KEY);
         const parsed: Stored | null = storedStrategy ? JSON.parse(storedStrategy) : null;

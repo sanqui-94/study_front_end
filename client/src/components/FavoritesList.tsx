@@ -8,7 +8,7 @@ export default function FavoritesList() {
     const [favoriteStrategies, setFavoriteStrategies] = useState<Strategy[]>([]);
 
     useEffect(() => {
-        fetch(`api/strategies`)
+        fetch("api/strategies")
             .then(res => res.json())
             .then(data => setFavoriteStrategies(data))
             .catch(err => console.error(`Failed to load strategies: ${err}`));

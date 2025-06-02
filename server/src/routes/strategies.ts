@@ -1,7 +1,7 @@
 import { Router } from "express";
 import fs from "fs";
 import path from "path";
-import { Strategy } from '@shared/types/strategy';
+import { Strategy } from "@shared/types/strategy";
 
 
 const router = Router();

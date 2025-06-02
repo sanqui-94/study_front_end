@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "types": ["jest", "node"],
+    "verbatimModuleSyntax": false
+  }
+}
+
