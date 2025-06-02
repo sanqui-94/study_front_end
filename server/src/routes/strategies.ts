@@ -7,7 +7,7 @@ import { Strategy } from "@shared/types/strategy";
 const router = Router();
 
 const strategiesDir = path.join(__dirname, "../data/strategies.json");
-const strategies = JSON.parse(fs.readFileSync(strategiesDir, "utf-8"));
+const strategies: Strategy[] = JSON.parse(fs.readFileSync(strategiesDir, "utf-8"));
 
 // GET all strategies
 router.get("/", (_req, res) =>{
@@ -23,7 +23,7 @@ router.get("/random", (_req, res) => {
 // GET a single strategy by id
 router.get("/:id", (req, res) => {
     const id = parseInt(req.params.id, 10);
-    const strategyFound = strategies.find((strategy: Strategy) => strategy.id === id);
+    const strategyFound: Strategy | undefined  = strategies.find((strategy: Strategy) => strategy.id === id);
 
     if (strategyFound) {
         res.json(strategyFound)
