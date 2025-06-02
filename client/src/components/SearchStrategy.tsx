@@ -19,7 +19,7 @@ export default function SearchStrategy() {
     }, []);
 
     const fuse = useMemo(
-        () => new Fuse(strategies, { keys: ["text"], threshold: 0.6 }),
+        () => new Fuse<Strategy>(strategies, { keys: ["text"], threshold: 0.6 }),
         [strategies]
     );
 
