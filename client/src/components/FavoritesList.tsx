@@ -19,7 +19,7 @@ export default function FavoritesList() {
 
     return (
         <div className="max-w-5xl mx-auto px-4 pt-16 pb-4">
-            <h1 className="text-4xl mb-4">Your Favorite Strategies</h1>
+            <h1 className="text-4xl text-center mb-4">Your Favorite Strategies</h1>
             {filteredFavorites.length === 0 ? (
                 <p className="text-lg text-center text-gray-600">No favorites yet</p>
             ) : (

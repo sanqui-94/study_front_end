@@ -3,7 +3,6 @@ import fs from "fs";
 import path from "path";
 import { Strategy } from "@shared/types/strategy";
 
-
 const router = Router();
 
 const strategiesDir = path.join(__dirname, "../data/strategies.json");
