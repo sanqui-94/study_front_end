@@ -38,8 +38,10 @@ export default function StrategyView() {
                     to break a deadlock or dilemma situation in creative processes
                 </p>
             </header>
-            <main className="flex-1 flex flex-col items-center justify-start mt-4 w-min-[550px]">
-                {strategy ? <StrategyCard strategy={strategy}/> : <p>Loading…</p>}
+            <main className="flex-1 flex flex-col items-center justify-start mt-4">
+                <div className="min-w-[400px]">
+                    {strategy ? <StrategyCard strategy={strategy}/> : <p>Loading…</p>}
+                </div>
                 <button
                     onClick={handleClick}
                     className="mt-6 px-6 py-3 rounded-full border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-secondary transition"
