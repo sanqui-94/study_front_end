@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
+    "build": "tsc && npm run copy-data",
+    "copy-data": "cp -R src/data dist/server/src/data",
+    "start": "node dist/server/src/index.js",
     "test": "jest --passWithNoTests"
   },
   "keywords": [],
