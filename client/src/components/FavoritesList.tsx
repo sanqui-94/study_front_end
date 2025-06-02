@@ -3,12 +3,13 @@ import StrategyCard from "./StrategyCard.tsx";
 import {useFavorites} from "../hooks/useFavorites.ts";
 import type {Strategy} from "@shared/types/strategy.ts";
 
+const base = import.meta.env.VITE_API_URL;
 export default function FavoritesList() {
     const {favorites} = useFavorites();
     const [favoriteStrategies, setFavoriteStrategies] = useState<Strategy[]>([]);
 
     useEffect(() => {
-        fetch("api/strategies")
+        fetch(`${base}api/strategies`)
             .then(res => res.json())
             .then(data => setFavoriteStrategies(data))
             .catch(err => console.error(`Failed to load strategies: ${err}`));

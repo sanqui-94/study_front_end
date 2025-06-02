@@ -2,11 +2,13 @@ import {useEffect, useState} from "react";
 import type {Strategy} from "@shared/types/strategy";
 import StrategyCard from "./StrategyCard";
 
+const base = import.meta.env.VITE_API_URL;
+
 export default function StrategyView() {
     const [strategy, setStrategy] = useState<Strategy | null>(null);
 
     useEffect(() => {
-        fetch("/api/strategies/random")
+        fetch(`${base}/api/strategies/random`)
             .then(res => res.json())
             .then(setStrategy)
             .catch(err => console.error("Failed to fetch strategy", err));
