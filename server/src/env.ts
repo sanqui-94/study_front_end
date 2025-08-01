@@ -12,4 +12,5 @@ function getEnv(key: string, fallBack?: string): string {
 export const ENV = {
     PORT: getEnv("PORT", "3001"),
     CLIENT_ORIGIN: getEnv("CLIENT_ORIGIN", "*"),
+    FIREBASE_PROJECT_ID: getEnv("FIREBASE_PROJECT_ID"),
 };

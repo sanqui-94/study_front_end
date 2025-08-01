@@ -18,7 +18,7 @@ export default function SearchStrategy() {
             .catch((err) =>
                 console.error("There was an error fetching strategies:", err)
             );
-    }, []);
+    }, [base]);
 
     const fuse = useMemo(
         () => new Fuse<Strategy>(strategies, { keys: ["text"], threshold: 0.6 }),

@@ -1,7 +1,6 @@
 import request from "supertest";
 import express from "express";
 import strategiesRouter from "../../src/routes/strategies";
-import { ENV } from "../../src/env";
 import fs from "fs";
 import { Strategy } from "@shared/types/strategy";
 

@@ -13,7 +13,7 @@ export default function StrategyView() {
             .then(res => res.json())
             .then(setStrategy)
             .catch(err => console.error("Failed to fetch strategy", err));
-    }, []);
+    }, [base]);
 
     const handleClick = async () => {
         try {

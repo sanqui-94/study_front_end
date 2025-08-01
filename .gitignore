@@ -2,4 +2,9 @@
 node_modules
 dist
 /server/dist
-/cliet/dist
+/client/dist
+
+# Environment files
+.env
+client/.env
+server/.env

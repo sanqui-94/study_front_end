@@ -9,11 +9,11 @@ export default function FavoritesList() {
     const base = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
-        fetch(`${base}api/strategies`)
+        fetch(`${base}/api/strategies`)
             .then(res => res.json())
             .then(data => setFavoriteStrategies(data))
             .catch(err => console.error(`Failed to load strategies: ${err}`));
-    }, []);
+    }, [base]);
 
     const filteredFavorites = favoriteStrategies.filter(strategy => favorites.includes(strategy.id));
 

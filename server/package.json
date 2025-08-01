@@ -7,7 +7,9 @@
     "build": "tsc && npm run copy-data",
     "copy-data": "cp -R src/data dist/server/src/data",
     "start": "node dist/server/src/index.js",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "lint": "eslint src/ tests/",
+    "lint:fix": "eslint src/ tests/ --fix"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +18,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "firebase-admin": "^13.4.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.18",
