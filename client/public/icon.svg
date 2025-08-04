@@ -1,0 +1,16 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="192" height="192" rx="32" fill="#8b5a3c"/>
+  
+  <!-- Card shape -->
+  <rect x="24" y="32" width="144" height="128" rx="16" fill="#faf8f5" stroke="#8b5a3c" stroke-width="2"/>
+  
+  <!-- Text lines representing strategy -->
+  <rect x="48" y="64" width="96" height="8" rx="4" fill="#8b5a3c" opacity="0.8"/>
+  <rect x="48" y="80" width="72" height="8" rx="4" fill="#8b5a3c" opacity="0.6"/>
+  <rect x="48" y="96" width="84" height="8" rx="4" fill="#8b5a3c" opacity="0.7"/>
+  <rect x="48" y="112" width="60" height="8" rx="4" fill="#8b5a3c" opacity="0.5"/>
+  
+  <!-- Corner decoration -->
+  <circle cx="156" cy="44" r="6" fill="#8b5a3c" opacity="0.3"/>
+</svg>

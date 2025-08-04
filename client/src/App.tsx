@@ -9,6 +9,7 @@ import SearchStrategy from "./components/SearchStrategy";
 import DailyReminder from "./components/DailyReminder";
 import LoginModal from "./components/auth/LoginModal";
 import UserProfile from "./components/auth/UserProfile";
+import InstallPrompt from "./components/InstallPrompt";
 
 function AppContent() {
     const { currentUser } = useAuth();
@@ -99,6 +100,8 @@ function AppContent() {
                 isOpen={showLoginModal} 
                 onClose={() => setShowLoginModal(false)} 
             />
+            
+            <InstallPrompt />
         </div>
     );
 }
