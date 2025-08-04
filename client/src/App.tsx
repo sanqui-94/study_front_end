@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { StrategiesProvider } from "./contexts/StrategiesContext";
 import StrategyView from "./components/StrategyView";
 import FavoritesList from "./components/FavoritesList";
 import SearchStrategy from "./components/SearchStrategy";
@@ -105,7 +106,9 @@ function AppContent() {
 export default function App() {
     return (
         <AuthProvider>
-            <AppContent />
+            <StrategiesProvider>
+                <AppContent />
+            </StrategiesProvider>
         </AuthProvider>
     );
 }

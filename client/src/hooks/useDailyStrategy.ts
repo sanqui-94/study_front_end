@@ -1,5 +1,6 @@
 import type {Strategy} from "@shared/types/strategy.ts";
 import {useEffect, useState} from "react";
+import {useStrategies} from "../contexts/StrategiesContext.tsx";
 
 const STORAGE_KEY = "daily-strategy";
 
@@ -11,9 +12,9 @@ type Stored = {
 
 export function useDailyStrategy() {
     const  [strategy, setStrategy] = useState<Strategy | null>(null);
+    const { getStrategy, getRandomStrategy } = useStrategies();
 
     useEffect(() => {
-        const base = import.meta.env.VITE_API_URL;
         const today = new Date().toISOString().split("T")[0];
 
         const storedStrategy = localStorage.getItem(STORAGE_KEY);
@@ -23,14 +24,17 @@ export function useDailyStrategy() {
             try {
                 // reuse stored strategy if present
                 if (parsed?.date === today) {
-                    const response = await fetch(`${base}/api/strategies/${parsed.id}`);
-                    const data = await response.json();
-                    setStrategy(data);
+                    const strategy = getStrategy(parsed.id);
+                    if (strategy) {
+                        setStrategy(strategy);
+                        return;
+                    }
                 } else {
-                    const response = await fetch(`${base}/api/strategies/random`);
-                    const data = await response.json();
-                    setStrategy(data);
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify({ id: data.id, date: today }));
+                    const strategy = getRandomStrategy();
+                    if (strategy) {
+                        setStrategy(strategy);
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify({ id: strategy.id, date: today }));
+                    }
                 }
             } catch (error) {
                 console.error(error);
@@ -38,7 +42,7 @@ export function useDailyStrategy() {
         };
 
         loadStrategy();
-    }, []);
+    }, [getRandomStrategy, getStrategy]);
 
     return  { strategy };
 }

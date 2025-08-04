@@ -1,30 +1,48 @@
-import {useEffect, useState} from "react";
-import type {Strategy} from "@shared/types/strategy";
+import { useEffect, useState } from "react";
+import { useStrategies } from "../contexts/StrategiesContext";
+import type { Strategy } from "@shared/types/strategy";
 import StrategyCard from "./StrategyCard";
-
-
 
 export default function StrategyView() {
     const [strategy, setStrategy] = useState<Strategy | null>(null);
+    const { getRandomStrategy, loading, error } = useStrategies();
 
-    const base = import.meta.env.VITE_API_URL;
     useEffect(() => {
-        fetch(`${base}/api/strategies/random`)
-            .then(res => res.json())
-            .then(setStrategy)
-            .catch(err => console.error("Failed to fetch strategy", err));
-    }, [base]);
+        // Get initial random strategy when component mounts
+        const randomStrategy = getRandomStrategy();
+        if (randomStrategy) {
+            setStrategy(randomStrategy);
+        }
+    }, [getRandomStrategy]);
 
-    const handleClick = async () => {
-        try {
-            const response = await fetch(`${base}/api/strategies/random`);
-            const data = await response.json();
-            setStrategy(data);
-
-        } catch (err) {
-            console.error("Failed to fetch new strategy", err);
+    const handleClick = () => {
+        const randomStrategy = getRandomStrategy();
+        if (randomStrategy) {
+            setStrategy(randomStrategy);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center">
+                <p className="text-primary">Loading strategies...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center">
+                <p className="text-red-500">Error: {error}</p>
+                <button 
+                    onClick={() => window.location.reload()} 
+                    className="mt-4 px-4 py-2 border border-primary text-primary rounded hover:bg-primary hover:text-secondary"
+                >
+                    Retry
+                </button>
+            </div>
+        );
+    }
 
 
     return(

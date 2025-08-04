@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Root level:**
 - `npm run dev` - Start both client and server concurrently
+- `npm run verify:firestore` - Verify Firestore connection and setup
+- `npm run migrate:strategies` - Migrate strategy data from JSON to Firestore
 
 **Client (React + Vite):**
 - `npm run dev --prefix client` - Start development server 
@@ -66,9 +68,33 @@ This is an Oblique Strategies application with a full-stack TypeScript architect
 - ✅ AuthProvider integrated into App.tsx
 - ✅ Login/profile UI components created
 - ✅ UserProfile dropdown with logout functionality
+- ✅ StrategiesContext created for Firestore data management
+- ✅ Google OAuth authentication working
+- ✅ GitHub OAuth authentication working
+- ✅ Logout functionality working
 
 **Current Status:**
-- Firebase project configuration needed (environment variables)
+- ✅ Firestore data migration completed (116 strategies migrated)
+- ✅ Security rules published in Firebase Console
+- ✅ StrategiesContext fully implemented and integrated
+- ✅ Components updated: StrategyView, useDailyStrategy, FavoritesList
+- 🔄 IN PROGRESS: Completing component migration to StrategiesContext
+
+**Next Session Tasks:**
+1. **Finish Component Migration:**
+   - Check and update SearchStrategy.tsx if needed
+   - Verify all components use StrategiesContext instead of REST API
+   
+2. **Test Full Firestore Migration:**
+   - Test app works without Express server running
+   - Verify strategies load from Firestore
+   - Test user favorites sync with Firestore
+   - Test daily strategy functionality
+   
+3. **Clean Up (if time permits):**
+   - Remove old useFavorites hook if unused
+   - Update documentation
+   - Consider removing server-side strategy routes
 
 **Testing Plan:**
 
@@ -79,12 +105,12 @@ This is an Oblique Strategies application with a full-stack TypeScript architect
 4. ~~Add login/profile buttons to main UI to trigger authentication flow~~ ✅
 
 **Medium Priority Testing:**
-5. Test Google OAuth authentication flow
-6. Test GitHub OAuth authentication flow
+5. ~~Test Google OAuth authentication flow~~ ✅ WORKING
+6. ~~Test GitHub OAuth authentication flow~~ ✅ WORKING
 7. Test email/password registration and login
 8. Test anonymous/guest authentication
 9. Test user session persistence across page refreshes
-10. Test logout functionality
+10. ~~Test logout functionality~~ ✅ WORKING
 
 **Low Priority Enhancement:**
 11. ~~Create UserProfile component to display user info when authenticated~~ ✅

@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\""
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "verify:firestore": "node scripts/verify-firestore.js",
+    "migrate:strategies": "node scripts/migrate-strategies.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +17,7 @@
     "concurrently": "^9.1.2"
   },
   "dependencies": {
+    "firebase": "^12.0.0",
     "react-router-dom": "^7.6.1"
   }
 }

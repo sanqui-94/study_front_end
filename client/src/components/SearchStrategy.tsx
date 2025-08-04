@@ -1,27 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
-import type { Strategy } from "@shared/types/strategy";
+import {useEffect, useMemo, useState} from "react";
+import type {Strategy} from "@shared/types/strategy";
 import StrategyCard from "./StrategyCard";
 import Fuse from "fuse.js";
 import {MagnifyingGlassIcon} from "@heroicons/react/16/solid";
+import {useStrategies} from "../contexts/StrategiesContext.tsx";
 
 
 export default function SearchStrategy() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [strategies, setStrategies] = useState<Strategy[]>([]);
     const [filteredStrategies, setFilteredStrategies] = useState<Strategy[]>([]);
-    const base = import.meta.env.VITE_API_URL;
-
-    useEffect(() => {
-        fetch(`${base}/api/strategies`)
-            .then((res) => res.json())
-            .then((data) => setStrategies(data))
-            .catch((err) =>
-                console.error("There was an error fetching strategies:", err)
-            );
-    }, [base]);
+    const {strategies} = useStrategies();
 
     const fuse = useMemo(
-        () => new Fuse<Strategy>(strategies, { keys: ["text"], threshold: 0.6 }),
+        () => new Fuse<Strategy>(strategies, {keys: ["text"], threshold: 0.6}),
         [strategies]
     );
 
@@ -66,7 +57,7 @@ export default function SearchStrategy() {
                     </p>
                 ) : (
                     filteredStrategies.map((strategy) => (
-                        <StrategyCard key={strategy.id} strategy={strategy} />
+                        <StrategyCard key={strategy.id} strategy={strategy}/>
                     ))
                 )}
             </div>
