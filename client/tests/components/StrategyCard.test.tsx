@@ -1,9 +1,6 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent } from "../test-utils";
 import StrategyCard from "../../src/components/StrategyCard";
-import { useFavorites } from "../../src/hooks/useFavorites";
-
-// Mock the useFavorites hook
-jest.mock("../../src/hooks/useFavorites");
+import { mockStrategiesContext } from "../test-utils";
 
 describe("StrategyCard", () => {
   const mockStrategy = {
@@ -11,19 +8,11 @@ describe("StrategyCard", () => {
     text: "Test Strategy",
   };
 
-  const mockToggleFavorite = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("renders strategy information correctly", () => {
-    // Mock the useFavorites hook to return a strategy that is not a favorite
-    (useFavorites as jest.Mock).mockReturnValue({
-      isFavorite: () => false,
-      toggleFavorite: mockToggleFavorite,
-    });
-
     render(<StrategyCard strategy={mockStrategy} />);
 
     // Check that the strategy ID is displayed
@@ -39,11 +28,9 @@ describe("StrategyCard", () => {
   });
 
   it("renders a filled star when strategy is a favorite", () => {
-    // Mock the useFavorites hook to return a strategy that is a favorite
-    (useFavorites as jest.Mock).mockReturnValue({
-      isFavorite: () => true,
-      toggleFavorite: mockToggleFavorite,
-    });
+    // Mock the favorites to include our test strategy
+    mockStrategiesContext.favorites = [42];
+    mockStrategiesContext.isFavorite.mockReturnValue(true);
 
     render(<StrategyCard strategy={mockStrategy} />);
 
@@ -54,12 +41,6 @@ describe("StrategyCard", () => {
   });
 
   it("calls toggleFavorite when the star button is clicked", () => {
-    // Mock the useFavorites hook
-    (useFavorites as jest.Mock).mockReturnValue({
-      isFavorite: () => false,
-      toggleFavorite: mockToggleFavorite,
-    });
-
     render(<StrategyCard strategy={mockStrategy} />);
 
     // Find and click the favorite button
@@ -67,7 +48,7 @@ describe("StrategyCard", () => {
     fireEvent.click(favoriteButton);
 
     // Check that toggleFavorite was called with the correct strategy ID
-    expect(mockToggleFavorite).toHaveBeenCalledTimes(1);
-    expect(mockToggleFavorite).toHaveBeenCalledWith(42);
+    expect(mockStrategiesContext.toggleFavorite).toHaveBeenCalledTimes(1);
+    expect(mockStrategiesContext.toggleFavorite).toHaveBeenCalledWith(42);
   });
 });

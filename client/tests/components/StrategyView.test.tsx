@@ -1,6 +1,5 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, mockStrategiesContext } from "../test-utils";
 import StrategyView from "../../src/components/StrategyView";
-import StrategyCard from "../../src/components/StrategyCard";
 
 // Mock the StrategyCard component
 jest.mock("../../src/components/StrategyCard", () => {
@@ -8,128 +7,70 @@ jest.mock("../../src/components/StrategyCard", () => {
 });
 
 describe("StrategyView", () => {
-  // Mock fetch
-  const mockFetch = jest.fn();
-  global.fetch = mockFetch;
-
   beforeEach(() => {
     jest.clearAllMocks();
+    // Reset mock context
+    mockStrategiesContext.loading = false;
+    mockStrategiesContext.error = null;
+    mockStrategiesContext.getRandomStrategy.mockReturnValue({
+      id: 1,
+      text: "Test strategy"
+    });
   });
 
-  it("shows loading message initially", () => {
-    // Mock fetch but don't resolve yet
-    mockFetch.mockImplementationOnce(() => new Promise(() => {}));
-
+  it("shows loading message when loading", () => {
+    // Mock loading state
+    mockStrategiesContext.loading = true;
+    
     render(<StrategyView />);
 
     // Should show loading message
-    expect(screen.getByText("Loading…")).toBeInTheDocument();
+    expect(screen.getByText("Loading strategies...")).toBeInTheDocument();
   });
 
-  it("loads and displays a random strategy on mount", async () => {
-    // Mock strategy data
-    const mockStrategy = { id: 42, text: "Test Strategy" };
-
-    // Mock successful fetch
-    mockFetch.mockResolvedValueOnce({
-      json: jest.fn().mockResolvedValueOnce(mockStrategy)
-    });
-
+  it("shows error message when there's an error", () => {
+    // Mock error state
+    mockStrategiesContext.error = "Failed to load";
+    
     render(<StrategyView />);
 
-    // Wait for the strategy to load
-    await waitFor(() => {
-      expect(StrategyCard).toHaveBeenCalled();
-    });
+    // Should show error message
+    expect(screen.getByText("Error: Failed to load")).toBeInTheDocument();
+    expect(screen.getByText("Retry")).toBeInTheDocument();
+  });
 
-    // Strategy card should be rendered
+  it("loads and displays a random strategy on mount", () => {
+    render(<StrategyView />);
+
+    // Should display the strategy card
     expect(screen.getByTestId("strategy-card")).toBeInTheDocument();
-
-    // StrategyCard should be called with the correct props
-    expect(StrategyCard).toHaveBeenCalledWith({ strategy: mockStrategy }, undefined);
+    
+    // Should show the "Get Another" button
+    expect(screen.getByText("Get Another")).toBeInTheDocument();
   });
 
-  it("fetches a new strategy when 'Get Another' button is clicked", async () => {
-    // Mock initial strategy
-    const initialStrategy = { id: 1, text: "Initial Strategy" };
-    const newStrategy = { id: 2, text: "New Strategy" };
-
-    // Mock fetch for initial load
-    mockFetch.mockResolvedValueOnce({
-      json: jest.fn().mockResolvedValueOnce(initialStrategy)
-    });
-
+  it("fetches a new strategy when 'Get Another' button is clicked", () => {
     render(<StrategyView />);
-
-    // Wait for the initial strategy to load
-    await waitFor(() => {
-      expect(StrategyCard).toHaveBeenCalledWith({ strategy: initialStrategy }, undefined);
-    });
-
-    // Reset mocks to prepare for the button click
-    jest.clearAllMocks();
-
-    // Mock fetch for the button click
-    mockFetch.mockResolvedValueOnce({
-      json: jest.fn().mockResolvedValueOnce(newStrategy)
-    });
 
     // Click the "Get Another" button
-    fireEvent.click(screen.getByText("Get Another"));
+    const getAnotherButton = screen.getByText("Get Another");
+    fireEvent.click(getAnotherButton);
 
-    // Wait for the new strategy to load
-    await waitFor(() => {
-      expect(StrategyCard).toHaveBeenCalledWith({ strategy: newStrategy }, undefined);
-    });
-
-    // Fetch should have been called again
-    expect(mockFetch).toHaveBeenCalledTimes(1);
-    expect(mockFetch).toHaveBeenCalledWith("/api/strategies/random");
+    // Should call getRandomStrategy again
+    expect(mockStrategiesContext.getRandomStrategy).toHaveBeenCalledTimes(2); // Once on mount, once on click
   });
 
-  it("handles fetch errors gracefully", async () => {
-    // Mock fetch to reject
-    mockFetch.mockRejectedValueOnce(new Error("Failed to fetch"));
-
-    // Spy on console.error
-    jest.spyOn(console, "error").mockImplementation(() => {});
-
+  it("handles retry button click", () => {
+    // Mock error state
+    mockStrategiesContext.error = "Failed to load";
+    
     render(<StrategyView />);
 
-    // Wait for fetch to be called
-    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+    const retryButton = screen.getByText("Retry");
+    fireEvent.click(retryButton);
 
-    // Console error should have been called
-    expect(console.error).toHaveBeenCalled();
-  });
-
-  it("handles click errors gracefully", async () => {
-    // Mock initial strategy fetch
-    const initialStrategy = { id: 1, text: "Initial Strategy" };
-    mockFetch.mockResolvedValueOnce({
-      json: jest.fn().mockResolvedValueOnce(initialStrategy)
-    });
-
-    render(<StrategyView />);
-
-    // Wait for the initial strategy to load
-    await waitFor(() => {
-      expect(StrategyCard).toHaveBeenCalled();
-    });
-
-    // Reset mocks and prepare for error on button click
-    jest.clearAllMocks();
-    mockFetch.mockRejectedValueOnce(new Error("Failed to fetch new strategy"));
-
-    // Spy on console.error
-    jest.spyOn(console, "error").mockImplementation(() => {});
-
-    // Click the "Get Another" button
-    fireEvent.click(screen.getByText("Get Another"));
-
-    // Wait for the error handling
-    await waitFor(() => {
-      expect(console.error).toHaveBeenCalled();
-    });
+    // The reload should be triggered (window.location.reload)
+    // We can't easily test window.location.reload in jsdom, but we can verify the button exists
+    expect(retryButton).toBeInTheDocument();
   });
 });

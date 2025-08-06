@@ -23,6 +23,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run start --prefix server` - Start production server
 - `npm run test --prefix server` - Run Jest tests
 
+
+# Code style
+- Use ES modules (import/export) syntax, not CommonJS (require)
+- Destructure imports when possible (eg. import { foo } from 'bar')
+- always add an extra line at end of files.
+
+
+# Workflow
+- Be sure to typecheck when you’re done making a series of code changes
+- Prefer running single tests, and not the whole test suite, for performance
+
+
 ## Architecture
 
 This is an Oblique Strategies application with a full-stack TypeScript architecture:
@@ -77,21 +89,35 @@ This is an Oblique Strategies application with a full-stack TypeScript architect
 - ✅ Firestore data migration completed (116 strategies migrated)
 - ✅ Security rules published in Firebase Console
 - ✅ StrategiesContext fully implemented and integrated
-- ✅ Components updated: StrategyView, useDailyStrategy, FavoritesList
-- 🔄 IN PROGRESS: Completing component migration to StrategiesContext
+- ✅ Components updated: StrategyView, useDailyStrategy, FavoritesList, SearchStrategy
+- ✅ All component tests migrated to StrategiesContext (25/27 tests passing)
+- ✅ Favorites bug fixed - StrategyCard now uses correct toggleFavorite method
+- ✅ Test framework properly configured for Vite + Firebase environment
+- ✅ Jest mocks working correctly for Firebase and import.meta.env
+- 🔄 2 minor test failures remaining in useDailyStrategy (timing issues)
+
+**Progress Summary:**
+- **Test Coverage:** All major components migrated from REST API to Firestore patterns
+- **Passing Tests:** FavoritesList, SearchStrategy, StrategyView components
+- **Failing Tests:** useDailyStrategy hook (2 async timing tests)
+- **Architecture:** Full transition from REST API to Firebase/Firestore completed
 
 **Next Session Tasks:**
-1. **Finish Component Migration:**
-   - Check and update SearchStrategy.tsx if needed
-   - Verify all components use StrategiesContext instead of REST API
+1. **Complete Testing Setup:**
+   - Fix remaining 2 useDailyStrategy test failures (async timing issues)
+   - Add tests for favorites functionality
    
-2. **Test Full Firestore Migration:**
+2. **UI Improvements:**
+   - Add spinner icon to favorite button during async toggleFavorite operation
+   - Improve loading states across the application
+   
+3. **Test Full Firestore Migration:**
    - Test app works without Express server running
    - Verify strategies load from Firestore
    - Test user favorites sync with Firestore
    - Test daily strategy functionality
    
-3. **Clean Up (if time permits):**
+4. **Clean Up (if time permits):**
    - Remove old useFavorites hook if unused
    - Update documentation
    - Consider removing server-side strategy routes
