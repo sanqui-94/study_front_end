@@ -7,7 +7,7 @@ const config: Config = {
     testMatch: ["**/?(*.)+(spec|test).[jt]s?(x)"],
     setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
     moduleNameMapper: {
-        "^@shared/(.*)$": "<rootDir>/src/shared/$1",
+        "^@shared/(.*)$": "<rootDir>/src/shared/$1"
     },
     transform: {
         "^.+\\.(ts|tsx)$": ["ts-jest", {

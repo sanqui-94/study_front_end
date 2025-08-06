@@ -1,9 +1,6 @@
 import { renderHook, act } from "@testing-library/react";
+import { mockStrategiesContext } from "../test-utils";
 import { useDailyStrategy } from "../../src/hooks/useDailyStrategy";
-
-// Mock the fetch API
-const mockFetch = jest.fn();
-global.fetch = mockFetch;
 
 // Mock localStorage
 const mockLocalStorage = (() => {
@@ -33,70 +30,68 @@ class MockDate extends Date {
     }
   }
 
+  static now() {
+    return new Date(MOCK_DATE).getTime();
+  }
+
   toISOString() {
-    return new originalDate(MOCK_DATE).toISOString();
+    if (this.getTime() === new Date(MOCK_DATE).getTime()) {
+      return `${MOCK_DATE}T00:00:00.000Z`;
+    }
+    return super.toISOString();
   }
 }
 
 describe("useDailyStrategy hook", () => {
   beforeEach(() => {
-    // Reset mocks
     jest.clearAllMocks();
     mockLocalStorage.clear();
-
-    // Mock the date
-    global.Date = MockDate as DateConstructor;
+    global.Date = MockDate as typeof Date;
+    
+    // Reset mock context
+    mockStrategiesContext.getRandomStrategy.mockReturnValue({
+      id: 123,
+      text: "Test Strategy"
+    });
+    mockStrategiesContext.getStrategy.mockReturnValue({
+      id: 123, 
+      text: "Test Strategy"
+    });
   });
 
   afterEach(() => {
-    // Restore date
     global.Date = originalDate;
   });
 
-  afterAll(() => {
-    jest.restoreAllMocks();
-  });
-
-  it("fetches a new random strategy when no stored strategy exists", async () => {
-    // Mock a successful API response for a random strategy
-    const mockStrategy = { id: 123, title: "Test Strategy", description: "Test Description" };
-    mockFetch.mockResolvedValueOnce({
-      json: async () => mockStrategy,
-    });
-
+  it("fetches a new random strategy when no stored strategy exists", () => {
     // Render the hook
     const { result } = renderHook(() => useDailyStrategy());
 
-    // Initial state should be null
-    expect(result.current.strategy).toBeNull();
+    // Verify getRandomStrategy was called
+    expect(mockStrategiesContext.getRandomStrategy).toHaveBeenCalled();
 
-    // Wait for the effect to run
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    // Strategy should be updated with the mock data immediately
+    expect(result.current.strategy).toEqual({
+      id: 123,
+      text: "Test Strategy"
     });
-
-    // Verify fetch was called correctly
-    expect(mockFetch).toHaveBeenCalledWith("/api/strategies/random");
-
-    // Strategy should be updated with the mock data
-    expect(result.current.strategy).toEqual(mockStrategy);
 
     // Verify localStorage was set with the correct data
     expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
       "daily-strategy",
-      JSON.stringify({ id: mockStrategy.id, date: MOCK_DATE })
+      JSON.stringify({ id: 123, date: MOCK_DATE })
     );
   });
 
   it("reuses a stored strategy if it's from today", async () => {
-    // Setup localStorage with a strategy from today
-    const storedStrategy = { id: 456, date: MOCK_DATE };
-    mockLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(storedStrategy));
-
-    // Mock a successful API response for the specific strategy
-    const mockStrategy = { id: 456, title: "Stored Strategy", description: "Stored Description" };
-    mockFetch.mockResolvedValueOnce({
-      json: async () => mockStrategy,
+    // Pre-populate localStorage with today's strategy
+    const storedData = { id: 456, date: MOCK_DATE };
+    mockLocalStorage.getItem.mockReturnValue(JSON.stringify(storedData));
+    
+    // Mock getStrategy to return the stored strategy
+    mockStrategiesContext.getStrategy.mockReturnValue({
+      id: 456,
+      text: "Stored Strategy"
     });
 
     // Render the hook
@@ -107,27 +102,23 @@ describe("useDailyStrategy hook", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    // Verify fetch was called with the stored ID
-    expect(mockFetch).toHaveBeenCalledWith(`/api/strategies/${storedStrategy.id}`);
+    // Verify getStrategy was called with the stored ID
+    expect(mockStrategiesContext.getStrategy).toHaveBeenCalledWith(456);
 
-    // Strategy should be updated with the mock data
-    expect(result.current.strategy).toEqual(mockStrategy);
+    // Should NOT call getRandomStrategy
+    expect(mockStrategiesContext.getRandomStrategy).not.toHaveBeenCalled();
 
-    // localStorage.setItem should not be called since we're reusing the stored strategy
-    expect(mockLocalStorage.setItem).not.toHaveBeenCalled();
+    // Strategy should be the stored one
+    expect(result.current.strategy).toEqual({
+      id: 456, 
+      text: "Stored Strategy"
+    });
   });
 
   it("fetches a new strategy if the stored one is from a different day", async () => {
-    // Setup localStorage with a strategy from yesterday
-    const yesterdayDate = "2025-05-31";
-    const storedStrategy = { id: 789, date: yesterdayDate };
-    mockLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(storedStrategy));
-
-    // Mock a successful API response for a random strategy
-    const mockStrategy = { id: 999, title: "New Strategy", description: "New Description" };
-    mockFetch.mockResolvedValueOnce({
-      json: async () => mockStrategy,
-    });
+    // Pre-populate localStorage with yesterday's strategy
+    const storedData = { id: 456, date: "2025-05-31" };
+    mockLocalStorage.getItem.mockReturnValue(JSON.stringify(storedData));
 
     // Render the hook
     const { result } = renderHook(() => useDailyStrategy());
@@ -137,38 +128,50 @@ describe("useDailyStrategy hook", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    // Verify fetch was called for a random strategy
-    expect(mockFetch).toHaveBeenCalledWith("/api/strategies/random");
+    // Should call getRandomStrategy for a new strategy
+    expect(mockStrategiesContext.getRandomStrategy).toHaveBeenCalled();
 
-    // Strategy should be updated with the mock data
-    expect(result.current.strategy).toEqual(mockStrategy);
+    // Should NOT call getStrategy since the stored date doesn't match
+    expect(mockStrategiesContext.getStrategy).not.toHaveBeenCalled();
 
-    // Verify localStorage was updated with the new strategy
+    // Strategy should be updated with new data
+    expect(result.current.strategy).toEqual({
+      id: 123,
+      text: "Test Strategy"
+    });
+
+    // Verify localStorage was updated with today's data
     expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
       "daily-strategy",
-      JSON.stringify({ id: mockStrategy.id, date: MOCK_DATE })
+      JSON.stringify({ id: 123, date: MOCK_DATE })
     );
   });
 
-  it("handles API errors gracefully", async () => {
-    // Mock a failed API response
-    mockFetch.mockRejectedValueOnce(new Error("API Error"));
-
-    // Spy on console.error
-    jest.spyOn(console, "error").mockImplementation(() => {});
+  it("handles missing strategy gracefully", () => {
+    // Pre-populate localStorage with today's strategy but mock getStrategy to return null
+    const storedData = { id: 456, date: MOCK_DATE };
+    mockLocalStorage.getItem.mockReturnValue(JSON.stringify(storedData));
+    mockStrategiesContext.getStrategy.mockReturnValue(null);
 
     // Render the hook
     const { result } = renderHook(() => useDailyStrategy());
 
-    // Wait for the effect to run
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    // Should call getStrategy first with the stored ID
+    expect(mockStrategiesContext.getStrategy).toHaveBeenCalledWith(456);
+
+    // Should call getRandomStrategy as fallback when stored strategy doesn't exist
+    expect(mockStrategiesContext.getRandomStrategy).toHaveBeenCalled();
+
+    // Strategy should be updated with fallback data
+    expect(result.current.strategy).toEqual({
+      id: 123,
+      text: "Test Strategy"
     });
 
-    // Strategy should remain null
-    expect(result.current.strategy).toBeNull();
-
-    // Verify console.error was called
-    expect(console.error).toHaveBeenCalled();
+    // Verify localStorage was updated with new data
+    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+      "daily-strategy",
+      JSON.stringify({ id: 123, date: MOCK_DATE })
+    );
   });
 });

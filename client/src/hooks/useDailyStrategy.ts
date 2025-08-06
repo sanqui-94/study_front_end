@@ -29,12 +29,14 @@ export function useDailyStrategy() {
                         setStrategy(strategy);
                         return;
                     }
-                } else {
-                    const strategy = getRandomStrategy();
-                    if (strategy) {
-                        setStrategy(strategy);
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify({ id: strategy.id, date: today }));
-                    }
+                    // Fall through to get a new strategy if stored one doesn't exist
+                }
+                
+                // Get a new random strategy
+                const strategy = getRandomStrategy();
+                if (strategy) {
+                    setStrategy(strategy);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify({ id: strategy.id, date: today }));
                 }
             } catch (error) {
                 console.error(error);
