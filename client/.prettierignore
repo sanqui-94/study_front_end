@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Generated files
+*.generated.ts
+*.generated.js
+
+# Config files that should maintain their formatting
+package-lock.json
+yarn.lock
+
+# Logs
+*.log
+
+# Environment files
+.env*
+
+# Coverage reports
+coverage/
+
+# Testing
+test-results/
+
+# IDE files
+.vscode/
+.idea/

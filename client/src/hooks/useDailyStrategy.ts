@@ -1,6 +1,6 @@
-import type {Strategy} from "@shared/types/strategy.ts";
-import {useEffect, useState} from "react";
-import {useStrategies} from "../contexts/StrategiesContext.tsx";
+import type { Strategy } from "@shared/types/strategy.ts";
+import { useEffect, useState } from "react";
+import { useStrategies } from "../contexts/StrategiesContext.tsx";
 
 const STORAGE_KEY = "daily-strategy";
 
@@ -9,9 +9,8 @@ type Stored = {
     date: string; // ISO
 };
 
-
 export function useDailyStrategy() {
-    const  [strategy, setStrategy] = useState<Strategy | null>(null);
+    const [strategy, setStrategy] = useState<Strategy | null>(null);
     const { getStrategy, getRandomStrategy } = useStrategies();
 
     useEffect(() => {
@@ -31,12 +30,15 @@ export function useDailyStrategy() {
                     }
                     // Fall through to get a new strategy if stored one doesn't exist
                 }
-                
+
                 // Get a new random strategy
                 const strategy = getRandomStrategy();
                 if (strategy) {
                     setStrategy(strategy);
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify({ id: strategy.id, date: today }));
+                    localStorage.setItem(
+                        STORAGE_KEY,
+                        JSON.stringify({ id: strategy.id, date: today })
+                    );
                 }
             } catch (error) {
                 console.error(error);
@@ -46,5 +48,5 @@ export function useDailyStrategy() {
         loadStrategy();
     }, [getRandomStrategy, getStrategy]);
 
-    return  { strategy };
+    return { strategy };
 }

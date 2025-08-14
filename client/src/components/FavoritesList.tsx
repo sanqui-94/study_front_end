@@ -1,6 +1,6 @@
-
 import StrategyCard from "./StrategyCard.tsx";
-import {useStrategies} from "../contexts/StrategiesContext.tsx";
+import { useStrategies } from "../contexts/StrategiesContext.tsx";
+import { StarIcon as SolidStar } from "@heroicons/react/16/solid";
 
 export default function FavoritesList() {
     const { strategies, favorites, loading, error } = useStrategies();
@@ -29,16 +29,24 @@ export default function FavoritesList() {
         );
     }
 
-
     return (
-        <div className="max-w-5xl mx-auto px-4 pt-16 pb-4">
-            <h1 className="text-4xl text-center mb-4">Your Favorite Strategies</h1>
+        <div className="max-w-6xl mx-auto px-4 pt-8 sm:pt-16 pb-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl text-center mb-6 sm:mb-8">
+                Your Favorite Strategies
+            </h1>
             {favoriteStrategies.length === 0 ? (
-                <p className="text-lg text-center text-gray-600">No favorites yet</p>
+                <div className="text-center py-12">
+                    <p className="text-lg text-primary-light mb-4">No favorites yet</p>
+                    <p className="text-sm text-primary-light/75">
+                        Tap the {<SolidStar className="w-4 h-4 text-primary-light inline-block" />}{" "}
+                        on any strategy to save it here
+                    </p>
+                </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center">
-
-                    {favoriteStrategies.map((favorite) => (<StrategyCard key={favorite.id} strategy={favorite}/>))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                    {favoriteStrategies.map(favorite => (
+                        <StrategyCard key={favorite.id} strategy={favorite} />
+                    ))}
                 </div>
             )}
         </div>
