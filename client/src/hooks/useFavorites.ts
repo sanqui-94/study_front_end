@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "favorite-strategy-ids";
 
@@ -21,20 +21,16 @@ export function useFavorites() {
                 console.error("Invalid localStorage data for favorites:", err);
             }
         }
-
     }, []);
 
     useEffect(() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
     }, [favorites]);
 
-
     const toggleFavorite = (id: number) => {
-        setFavorites(prev =>
-            prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id]
-        );
-    }
+        setFavorites(prev => (prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id]));
+    };
     const isFavorite = (id: number) => favorites.includes(id);
 
-    return {favorites, toggleFavorite, isFavorite};
+    return { favorites, toggleFavorite, isFavorite };
 }

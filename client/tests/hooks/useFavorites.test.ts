@@ -48,17 +48,13 @@ describe("useFavorites hook", () => {
             result.current.toggleFavorite(3);
         });
         expect(result.current.favorites).toEqual([3]);
-        expect(window.localStorage.getItem("favorite-strategy-ids")).toEqual(
-            JSON.stringify([3])
-        );
+        expect(window.localStorage.getItem("favorite-strategy-ids")).toEqual(JSON.stringify([3]));
 
         // Remove ID 3
         act(() => {
             result.current.toggleFavorite(3);
         });
         expect(result.current.favorites).toEqual([]);
-        expect(window.localStorage.getItem("favorite-strategy-ids")).toEqual(
-            JSON.stringify([])
-        );
+        expect(window.localStorage.getItem("favorite-strategy-ids")).toEqual(JSON.stringify([]));
     });
 });
